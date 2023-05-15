@@ -7,6 +7,10 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { UserModule } from './user/user.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { GameModule } from './Game/game.module';
+import { VoucherModule } from './voucher/voucher.module';
+import { PartnerModule } from './partner/partner.module';
+import { CampaignModule } from './Campaign/campaign.module';
 
 @Module({
   imports: [
@@ -19,6 +23,10 @@ import { TransactionModule } from './transaction/transaction.module';
     }),
     TransactionModule,
     UserModule,
+    GameModule,
+    PartnerModule,
+    CampaignModule,
+    VoucherModule,
   ],
   controllers: [AppController],
   providers: [AppService],

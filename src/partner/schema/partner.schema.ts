@@ -6,7 +6,7 @@ export type PartnerDocument = Partner & Document;
 @Schema()
 export class Partner {
   @Prop({ required: true })
-  name: string;
+  username: string;
 
   @Prop({ required: true })
   password: string;

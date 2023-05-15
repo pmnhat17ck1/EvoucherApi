@@ -12,9 +12,11 @@ export class TransactionService {
     private transactionModel: Model<TransactionDocument>,
   ) {}
 
-  async create(createUserDto: CreateTransactionDto): Promise<Transaction> {
-    const createdUser = new this.transactionModel(createUserDto);
-    return createdUser.save();
+  async create(
+    createTransactionDto: CreateTransactionDto,
+  ): Promise<Transaction> {
+    const createdTransaction = new this.transactionModel(createTransactionDto);
+    return createdTransaction.save();
   }
 
   async findAll(): Promise<Transaction[]> {
@@ -25,20 +27,16 @@ export class TransactionService {
     return this.transactionModel.findOne({ Params }).exec();
   }
 
-  async findByUsername(username: string): Promise<Transaction> {
-    return this.transactionModel.findOne({ username }).exec();
-  }
-
   async findById(id: string): Promise<Transaction> {
     return this.transactionModel.findById(id).exec();
   }
 
   async update(
     id: string,
-    UpdateUserDto: UpdateTransactionDto,
+    updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionModel
-      .findByIdAndUpdate(id, UpdateUserDto, { new: true })
+      .findByIdAndUpdate(id, updateTransactionDto, { new: true })
       .exec();
   }
 

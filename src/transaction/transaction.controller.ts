@@ -4,13 +4,11 @@ import {
   Body,
   Get,
   Put,
-  UseGuards,
   Param,
   Delete,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Controller('transactions')
@@ -18,8 +16,8 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateTransactionDto) {
-    return this.transactionService.create(createUserDto);
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.transactionService.create(createTransactionDto);
   }
 
   @Get(':id')
@@ -35,9 +33,9 @@ export class TransactionController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateTransactionDto,
+    @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.transactionService.update(id, updateUserDto);
+    return this.transactionService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')
