@@ -5,6 +5,7 @@ export class Campaign extends BaseEntity {
   name!: string;
   idPartner!: ObjectId;
   status: CampaignState;
+  CampaignImage: string;
   reasonRejected?: string;
   startDate!: Date;
   endDate!: Date;
