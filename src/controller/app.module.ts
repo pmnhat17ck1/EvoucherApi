@@ -1,5 +1,5 @@
 import { CommonService } from 'src/services/common.service';
-import { AppService } from './../app.service';
+import { AppService } from './app.service';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { UserModule } from '../controller/user/user.module';

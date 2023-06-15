@@ -33,6 +33,13 @@ export class ClientAccessStrategy extends PassportStrategy(
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
+    const user = await this.usersService.getUserIfRefreshTokenMatches(
+      refreshToken,
+      new ObjectId(payload._id),
+    );
+    if (!user) {
+      throw new UnauthorizedException();
+    }
     return payload;
   }
 }

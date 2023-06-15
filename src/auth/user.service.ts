@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { compareHash, getHash } from 'src/helpers/auth.helper';
+import { BaseUserEntity } from 'src/models/base-entity';
 import { DocName } from 'src/models/doc-name';
 import { User } from 'src/models/user';
 import { CommonQueryService } from 'src/services/common.query.service';
@@ -36,6 +37,14 @@ export class UsersService {
       return null;
     }
     return _user;
+  }
+
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: ObjectId) {
+    const user = await this.getUserById<User>(userId);
+    if (user.rfToken === refreshToken) {
+      return user;
+    }
+    return null;
   }
   async getUserById<T>(userId: ObjectId) {
     const conditions = { _id: userId };

@@ -41,6 +41,13 @@ export class PartnerAccessStrategy extends PassportStrategy(
     if (user.role !== Role.Partner) {
       throw new UnauthorizedException();
     }
+    const isValid = await this.usersService.getUserIfRefreshTokenMatches(
+      refreshToken,
+      new ObjectId(payload._id),
+    );
+    if (!isValid) {
+      throw new UnauthorizedException();
+    }
     return payload;
   }
 }

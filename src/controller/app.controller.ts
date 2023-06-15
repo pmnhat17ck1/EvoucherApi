@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import * as moment from 'moment-timezone';
 
-import { AppService } from '../app.service';
+import { AppService } from './app.service';
 
 @Controller()
 export class AppController {

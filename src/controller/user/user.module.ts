@@ -10,7 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   controllers: [UserController],
   imports: [SharedModule, AuthModule],
-  providers: [UserService, CommonQueryService, CommonService],
+  providers: [UserService],
   exports: [UserService],
 })
 export class UserModule {}
