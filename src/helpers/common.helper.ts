@@ -24,12 +24,12 @@ export function getUserIdFromHeader(req: Request) {
   return new ObjectId(payload._id);
 }
 
-// export function getClientUserId(req: Request) {
-//   if (isNullOrUndefined(req.user)) {
-//     return null;
-//   }
-//   return new ObjectId((<User>req.user)._id);
-// }
+export function getUserId(req: any) {
+  if (isNullOrUndefined(req.user)) {
+    return null;
+  }
+  return new ObjectId(req.user._id);
+}
 
 export function getClientUser(req: any) {
   if (isNullOrUndefined(req.user)) {
