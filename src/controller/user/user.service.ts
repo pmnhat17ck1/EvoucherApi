@@ -24,6 +24,12 @@ export class UserService {
       throw new ForbiddenException('Failure to register');
     }
 
+    const { username } = await this.getUserByUsername(user.username);
+
+    if (username) {
+      throw new ForbiddenException('User exists already');
+    }
+
     const hashedPassword = getHash(user.password);
     const newUser: User = {
       username: user.username,
@@ -56,7 +62,6 @@ export class UserService {
     );
     if (isNullOrUndefined(pendingUser)) {
       const { insertedId } = await this.insertNewUser(newUser);
-      //   newUser._id = insertedId;
     }
     return newUser;
   }

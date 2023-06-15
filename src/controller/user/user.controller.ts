@@ -39,6 +39,7 @@ export class UserController {
     delete data.token.refreshTokenExpiresIn;
     return data;
   }
+
   @UseGuards(ClientAccessAuthGuard)
   @Get('getAll')
   async getAll() {

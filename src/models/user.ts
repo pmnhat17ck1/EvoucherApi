@@ -17,8 +17,8 @@ export class User extends BaseUserEntity {
   fbEmail?: string;
   gId?: string;
   gEmail?: string;
-  accountStatus: AccountStatus;
-  registerStatus: RegisterStatus;
+  accountStatus?: AccountStatus;
+  registerStatus?: RegisterStatus;
   confirmationCode?: string;
   sendConfirmationCodeAt?: Date;
   forgotCode?: string;

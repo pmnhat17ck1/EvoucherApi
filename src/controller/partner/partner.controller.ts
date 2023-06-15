@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Param, Post, Req } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { getUserId } from 'src/helpers/common.helper';
 import { PartnerService } from './partner.service';
 
@@ -10,7 +11,12 @@ export class PartnerController {
   @Post()
   async addPartner(@Req() req: Request, @Body() body) {
     const userId = getUserId(req);
-    console.log(userId);
     const partner = await this.partnerService.createPartner(userId, body);
+    return partner;
+  }
+  @Post('/:id')
+  async addBranch(@Param('id') id: ObjectId) {
+    console.log(id);
+    return '';
   }
 }

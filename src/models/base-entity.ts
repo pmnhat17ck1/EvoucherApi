@@ -22,5 +22,5 @@ export enum RegisterStatus {
 export class BaseUserEntity extends BaseEntity {
   hashedPassword?: string;
   currentHashedRefreshToken?: string;
-  accountStatus: AccountStatus;
+  accountStatus?: AccountStatus;
 }

@@ -4,7 +4,7 @@ import { User } from './user';
 
 export class Partner extends BaseEntity {
   userId: ObjectId;
-  logoBrand: string;
+  logoBrand?: string;
   branch?: Branch[];
   type: TypeIndustry;
 }
