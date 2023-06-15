@@ -1,7 +1,7 @@
+import { LocalAuthGuard } from './../../auth/local-strategy';
+import { JwtAccessAuthGuard } from './../../auth/jwt-access.strategy';
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
-// import { JwtAccessStrategy } from 'src/auth/jwt-access.strategy';
 import { LoginRequest, RegisterRequest } from 'src/models/requests/user.req';
 import { UserService } from './user.service';
 
@@ -24,14 +24,15 @@ export class UserController {
     return { data: { _id: clientUser._id } };
   }
 
+  // @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() req: any, @Body() body: LoginRequest) {
     const data = await this.userService.login(body);
     return data;
   }
-  // @UseGuards(JwtAccessStrategy)
+  @UseGuards(JwtAccessAuthGuard)
   @Get('getAll')
-  async getAll(@Req() req: any, @Body() body: LoginRequest) {
+  async getAll() {
     const data = await this.userService.getAll();
     return data;
   }

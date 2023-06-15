@@ -25,20 +25,24 @@ export async function getTokens(payload: { _id: ObjectId }) {
 
 export async function getAccessToken(payload: { _id: ObjectId }) {
   const jwtService = new JwtService();
-  const accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
   const accessToken = jwtService.sign(payload, {
     secret: process.env.TOKEN_SECRET,
-    expiresIn: 1000,
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
   });
+  const decodedToken = jwtService.verify(accessToken);
+  const expirationDate = new Date(decodedToken.exp * 1000);
+  const accessTokenExpiresIn = expirationDate.toISOString();
   return { accessToken, accessTokenExpiresIn };
 }
 
 export async function getRefreshToken(payload: { _id: ObjectId }) {
   const jwtService = new JwtService();
-  const refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPIRATION;
   const refreshToken = jwtService.sign(payload, {
     secret: process.env.TOKEN_SECRET,
-    expiresIn: 100000,
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
   });
+  const decodedToken = jwtService.verify(refreshToken);
+  const expirationDate = new Date(decodedToken.exp * 1000);
+  const refreshTokenExpiresIn = expirationDate.toISOString();
   return { refreshToken, refreshTokenExpiresIn };
 }

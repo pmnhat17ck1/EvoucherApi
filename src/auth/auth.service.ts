@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import * as moment from 'moment';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
@@ -25,20 +26,29 @@ export class AuthService {
   }
 
   async getAccessToken(payload: { _id: ObjectId }) {
-    const accessTokenExpiresIn = process.env.ACCESS_TOKEN_EXPIRATION;
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.TOKEN_SECRET,
-      expiresIn: 1000,
+      secret: this.configService.get('TOKEN_SECRET'),
+      expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRATION'),
     });
+    const decodedToken = this.jwtService.verify(accessToken);
+    const expirationDate = new Date(decodedToken.exp * 1000);
+    const accessTokenExpiresIn = moment(expirationDate).format(
+      'YYYY-MM-DD HH:mm:ss',
+    );
+
     return { accessToken, accessTokenExpiresIn };
   }
 
   async getRefreshToken(payload: { _id: ObjectId }) {
-    const refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPIRATION;
     const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.TOKEN_SECRET,
-      expiresIn: 10000,
+      secret: this.configService.get('TOKEN_SECRET'),
+      expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRATION'),
     });
+    const decodedToken = this.jwtService.verify(refreshToken);
+    const expirationDate = new Date(decodedToken.exp * 1000);
+    const refreshTokenExpiresIn = moment(expirationDate).format(
+      'YYYY-MM-DD HH:mm:ss',
+    );
     return { refreshToken, refreshTokenExpiresIn };
   }
 }

@@ -1,5 +1,5 @@
 import { LoginRequest } from './../../models/requests/user.req';
-import { User } from 'src/models/user';
+import { Role, User } from 'src/models/user';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 import { getHash } from 'src/helpers/auth.helper';
@@ -11,7 +11,6 @@ import { CommonQueryService } from 'src/services/common.query.service';
 import { CommonService } from 'src/services/common.service';
 import { ObjectId } from 'mongodb';
 import { compareHash } from '../../helpers/auth.helper';
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 @Injectable()
 export class UserService {
@@ -32,6 +31,7 @@ export class UserService {
       displayName: user.name,
       email: user.email,
       phoneNumber: user.phoneNumber,
+      role: Role.Client,
       accountStatus: AccountStatus.Disabled,
       registerStatus: RegisterStatus.WaitingEmailConfirmation,
       confirmationCode: null,
@@ -74,19 +74,20 @@ export class UserService {
   async login(user: LoginRequest) {
     const _user = await this.getUserByUsername(user.username);
     if (!_user) {
-      return { authentication: false, message: 'User not found!' };
+      throw new ForbiddenException('User not found');
     }
     const comparePassword = await compareHash(
       user.password,
       _user.hashedPassword,
     );
     if (!comparePassword) {
-      return { authentication: false, message: 'Wrong password!' };
+      throw new ForbiddenException('Wrong password');
     }
     const payload: any = {
       _id: _user._id,
     };
     const token = await this.authService.getTokens(payload);
+    console.log({ token });
     await this.setRfTokenUser(_user._id, token.refreshToken);
     return {
       authentication: true,
@@ -96,10 +97,23 @@ export class UserService {
         phone: _user.phoneNumber,
       },
       accessToken: token.accessToken,
+      accessTokenExpiresIn: token.accessTokenExpiresIn,
     };
   }
   async getAll() {
     return await this.commonQueryService.findManyByQuery(DocName.Users, {});
+  }
+
+  async vaildateUser(username: string, password: string): Promise<User> {
+    const _user = await this.getUserByUsername(username);
+    if (!_user) {
+      return null;
+    }
+    const comparePassword = await compareHash(password, _user.hashedPassword);
+    if (!comparePassword) {
+      return null;
+    }
+    return _user;
   }
   async setRfTokenUser(userId, rfToken: string) {
     const conditions = { _id: userId };

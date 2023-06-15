@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 // import { ConfigService } from './config/config.service';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { AppModule } from './controller/app.module';
+import { JwtAccessStrategy } from './auth/jwt-access.strategy';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: 'Content-Type, Accept',
   };
+
   // const config = new ConfigService();
   app.enableCors(corsOptions);
   await app.listen(3001);

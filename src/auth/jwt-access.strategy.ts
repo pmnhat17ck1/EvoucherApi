@@ -5,30 +5,29 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
+import { AuthGuard, PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { ObjectId } from 'mongodb';
 
+export class JwtAccessAuthGuard extends AuthGuard('jwt-access') {}
 @Injectable()
-export class JwtAccessStrategy implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+export class JwtAccessStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-access',
+) {
+  constructor(private configService: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.TOKEN_SECRET,
+      ignoreExpiration: false,
+      passReqToCallback: true,
+    });
+  }
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.TOKEN_SECRET,
-      });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
-    }
-    return true;
+  async validate(req: Request, payload: { _id: ObjectId }) {
+    return payload;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

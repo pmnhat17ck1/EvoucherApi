@@ -4,6 +4,7 @@ export class User extends BaseUserEntity {
   username: string;
   displayName!: string;
   hashedPassword!: string;
+  role: Role;
   email?: string;
   phoneNumber?: string;
   fbId?: string;
@@ -18,4 +19,10 @@ export class User extends BaseUserEntity {
   sendForgotCodeAt?: Date;
   rfToken?: string;
   lastLoginAt?: Date;
+}
+
+export enum Role {
+  Admin = 'Admin',
+  Partner = 'Partner',
+  Client = 'Client',
 }

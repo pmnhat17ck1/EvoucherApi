@@ -11,5 +11,6 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [UserController],
   imports: [SharedModule, AuthModule],
   providers: [UserService, CommonQueryService, CommonService],
+  exports: [UserService],
 })
 export class UserModule {}
