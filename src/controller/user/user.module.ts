@@ -1,4 +1,4 @@
-import { JwtAccessStrategy } from './../../auth/jwt-access.strategy';
+import { ClientAccessStrategy } from '../../auth/client.strategy';
 import { CommonService } from 'src/services/common.service';
 import { Module } from '@nestjs/common';
 import { CommonQueryService } from 'src/services/common.query.service';

@@ -87,7 +87,6 @@ export class UserService {
       _id: _user._id,
     };
     const token = await this.authService.getTokens(payload);
-    console.log({ token });
     await this.setRfTokenUser(_user._id, token.refreshToken);
     return {
       authentication: true,
@@ -96,8 +95,7 @@ export class UserService {
         email: _user.email,
         phone: _user.phoneNumber,
       },
-      accessToken: token.accessToken,
-      accessTokenExpiresIn: token.accessTokenExpiresIn,
+      token,
     };
   }
   async getAll() {
@@ -129,7 +127,6 @@ export class UserService {
       conditions,
       update,
     );
-    console.log({ updated });
     return updated;
   }
 

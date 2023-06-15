@@ -1,26 +1,21 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from '@nestjs/common';
+
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ObjectId } from 'mongodb';
 
-export class JwtAccessAuthGuard extends AuthGuard('jwt-access') {}
+export class AdminAccessAuthGuard extends AuthGuard('admin-jwt-access') {}
 @Injectable()
-export class JwtAccessStrategy extends PassportStrategy(
+export class AdminAccessStrategy extends PassportStrategy(
   Strategy,
-  'jwt-access',
+  'admin-jwt-access',
 ) {
   constructor(private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.TOKEN_SECRET,
+      secretOrKey: configService.get('TOKEN_SECRET'),
       ignoreExpiration: false,
       passReqToCallback: true,
     });

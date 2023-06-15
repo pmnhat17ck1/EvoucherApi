@@ -1,4 +1,10 @@
-import { AccountStatus, BaseUserEntity, RegisterStatus } from './base-entity';
+import { ObjectId } from 'mongodb';
+import {
+  AccountStatus,
+  BaseUserEntity,
+  RegisterStatus,
+  BaseEntity,
+} from './base-entity';
 
 export class User extends BaseUserEntity {
   username: string;

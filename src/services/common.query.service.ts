@@ -65,7 +65,6 @@ export class CommonQueryService {
     data.modifiedAt = createdAt;
     const client = await MongoClient.connect(this._conn);
     const db = client.db('evoucher');
-    console.log({ db });
     const result = await db.collection(collectionName).insertOne(data, options);
     return result;
   }

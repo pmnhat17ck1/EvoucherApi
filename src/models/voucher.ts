@@ -7,4 +7,5 @@ export class Voucher extends BaseEntity {
   voucherImage: string;
   startDate!: Date;
   endDate!: Date;
+  receiverId: ObjectId;
 }

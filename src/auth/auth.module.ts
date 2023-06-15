@@ -1,4 +1,4 @@
-import { JwtAccessStrategy } from './jwt-access.strategy';
+import { ClientAccessStrategy } from './client.strategy';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,7 +20,7 @@ import { UsersService } from './user.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, JwtAccessStrategy, UsersService],
+  providers: [AuthService, ClientAccessStrategy, UsersService],
   exports: [AuthService, UsersService],
 })
 export class AuthModule {}
