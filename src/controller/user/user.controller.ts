@@ -23,10 +23,10 @@ export class UserController {
     return { data: { _id: clientUser._id } };
   }
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() req: any, @Body() body: LoginRequest) {
-    const data = await this.userService.login(body);
+    const data = await this.userService.login(req.user);
     const refreshCookieName = this.configService.get('REFRESH_COOKIE_NAME');
     req.res.cookie(refreshCookieName, data.token.refreshToken, {
       httpOnly: true,

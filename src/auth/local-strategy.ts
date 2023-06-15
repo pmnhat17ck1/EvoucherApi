@@ -1,4 +1,4 @@
-import { Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-local';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { UsersService } from './user.service';
@@ -13,11 +13,10 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       passReqToCallback: true,
     });
   }
-
   async validate(req: Request, username: string, password: string) {
     const user = await this.userService.vaildateUser(username, password);
     if (!user) {
-      throw new ForbiddenException('Tài khoản hoặc mật khảu không chính xác');
+      throw new ForbiddenException('Wrong username or password!');
     }
     return user;
   }

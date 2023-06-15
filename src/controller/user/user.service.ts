@@ -71,18 +71,7 @@ export class UserService {
     return result;
   }
 
-  async login(user: LoginRequest) {
-    const _user = await this.getUserByUsername(user.username);
-    if (!_user) {
-      throw new ForbiddenException('User not found');
-    }
-    const comparePassword = await compareHash(
-      user.password,
-      _user.hashedPassword,
-    );
-    if (!comparePassword) {
-      throw new ForbiddenException('Wrong password');
-    }
+  async login(_user: User) {
     const payload: any = {
       _id: _user._id,
     };
