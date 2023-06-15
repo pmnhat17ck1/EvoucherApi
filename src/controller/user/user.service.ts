@@ -24,9 +24,9 @@ export class UserService {
       throw new ForbiddenException('Failure to register');
     }
 
-    const { username } = await this.getUserByUsername(user.username);
+    const userCheck = await this.getUserByUsername(user.username);
 
-    if (username) {
+    if (!isNullOrUndefined(userCheck)) {
       throw new ForbiddenException('User exists already');
     }
 
