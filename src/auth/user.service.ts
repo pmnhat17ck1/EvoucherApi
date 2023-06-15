@@ -37,15 +37,11 @@ export class UsersService {
     }
     return _user;
   }
-  async getUserById<T>(
-    userId: ObjectId,
-    projection: { [field: string]: number },
-    docName: DocName,
-  ) {
+  async getUserById<T>(userId: ObjectId) {
     const conditions = { _id: userId };
-    const options = { projection };
+    const options = {};
     const user = await this.commonQueryService.findOneById<T>(
-      docName,
+      DocName.Users,
       conditions,
       options,
     );

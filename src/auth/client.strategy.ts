@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { UsersService } from './user.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
@@ -12,7 +13,10 @@ export class ClientAccessStrategy extends PassportStrategy(
   Strategy,
   'jwt-access',
 ) {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private usersService: UsersService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('TOKEN_SECRET'),
@@ -26,12 +30,9 @@ export class ClientAccessStrategy extends PassportStrategy(
       'REFRESH_COOKIE_NAME',
     );
     const refreshToken = getRefreshToken(req, refreshCookieName);
-    console.log(refreshToken);
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
     return payload;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

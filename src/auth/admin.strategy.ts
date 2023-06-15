@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
-
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { ObjectId } from 'mongodb';
+import { getRefreshToken } from 'src/helpers/common.helper';
+import { UsersService } from './user.service';
+import { User } from '../models/user';
+import { Role } from '../models/user';
 
 export class AdminAccessAuthGuard extends AuthGuard('admin-jwt-access') {}
 @Injectable()
@@ -12,7 +15,10 @@ export class AdminAccessStrategy extends PassportStrategy(
   Strategy,
   'admin-jwt-access',
 ) {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private usersService: UsersService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('TOKEN_SECRET'),
@@ -22,11 +28,18 @@ export class AdminAccessStrategy extends PassportStrategy(
   }
 
   async validate(req: Request, payload: { _id: ObjectId }) {
-    return payload;
-  }
+    const refreshCookieName = this.configService.get<string>(
+      'REFRESH_COOKIE_NAME',
+    );
+    const refreshToken = getRefreshToken(req, refreshCookieName);
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const user: User = await this.usersService.getUserById(payload._id);
+    if (user.role !== Role.Admin) {
+      throw new UnauthorizedException();
+    }
+    return payload;
   }
 }

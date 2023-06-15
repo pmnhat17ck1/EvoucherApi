@@ -1,9 +1,9 @@
+import { ObjectId } from 'mongodb';
 import { BaseEntity } from './base-entity';
+import { User } from './user';
 
 export class Partner extends BaseEntity {
-  username!: string;
-  hashedPassword!: string;
-  displayName!: string;
+  userId: ObjectId;
   logoBrand: string;
   branch?: Branch[];
   type: TypeIndustry;
