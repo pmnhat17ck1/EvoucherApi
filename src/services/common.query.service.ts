@@ -340,6 +340,15 @@ export class CommonQueryService {
    * @param conditions Query conditions
    * @param options Find One Options
    */
+  // async findOneByQuery<T>(
+  //   collectionName: string,
+  //   conditions: BaseData,
+  //   options?: FindOptions,
+  // ) {
+  //   this._showQuery.call(this, conditions)
+  //   const db = await this.dbClientService.getDb()
+  //   return db.collection<T>(collectionName).findOne<T>(<any>conditions, options)
+  // }
   async findOneByQuery<T>(
     collectionName: string,
     conditions: BaseData,

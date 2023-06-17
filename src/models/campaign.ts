@@ -9,6 +9,7 @@ export class Campaign extends BaseEntity {
   campaignImage: string;
   type: TypeIndustry;
   games: Game[];
+  idBranch: ObjectId;
   description?: string;
   status: CampaignState;
   reasonRejected?: string;

@@ -81,20 +81,20 @@ export class PartnerService {
       createdAt: now,
       createdByUserId: <ObjectId>userId,
     };
-    const conditions = { _id };
+    const conditions = { userId: new ObjectId(_id) };
 
     const update: any = {
       $push: { branches: newBranch },
     };
 
-    const { matchedCount } = await this.commonQueryService.updateOneById(
+    const { matchedCount } = await this.commonQueryService.updateOneByQuery(
       now,
       DocName.Partner,
       conditions,
       update,
     );
 
-    return { matchedCount: 1, _id };
+    return { matchedCount, _id };
   }
 
   async modifyBranch(
@@ -105,32 +105,53 @@ export class PartnerService {
   ) {
     const now = this.commonService.getDate();
 
-    const conditions = { _id, branches: { $elemMatch: { _id: branchId } } };
-
-    const update: any = {
-      $set: {
-        'branches.$.nameBranch': request.nameBranch,
-        'branches.$.description': request.description,
-        'branches.$.direction': request.direction,
-        'branches.$.modifiedAt': now,
-        'branches.$.modifiedUserId': <ObjectId>userId,
-      },
+    const conditions = {
+      userId: new ObjectId(_id),
+      branches: { $elemMatch: { _id: new ObjectId(branchId) } },
     };
 
-    const result = await this.commonQueryService.updateOneByQuery(
+    let update: any = {};
+    if (isNullOrUndefined(request.direction)) {
+      const geoCode = await this.httpService.axiosRef.get(
+        `https://geocode.maps.co/search?q=${request.direction}`,
+      );
+      update = {
+        $set: {
+          'branches.$.nameBranch': request.nameBranch,
+          'branches.$.description': request.description,
+          'branches.$.direction': request.direction,
+          'branches.$.longtitude': geoCode.data[0].lon,
+          'branches.$.latitude': geoCode.data[0].lat,
+          'branches.$.modifiedAt': now,
+          'branches.$.modifiedUserId': <ObjectId>userId,
+        },
+      };
+    } else {
+      update = {
+        $set: {
+          'branches.$.nameBranch': request.nameBranch,
+          'branches.$.description': request.description,
+          'branches.$.direction': request.direction,
+          'branches.$.modifiedAt': now,
+          'branches.$.modifiedUserId': <ObjectId>userId,
+        },
+      };
+    }
+
+    const { matchedCount } = await this.commonQueryService.updateOneByQuery(
       now,
       DocName.Partner,
       conditions,
       update,
     );
-    console.log(result);
-    return { matchedCount: 0, _id };
+
+    return { matchedCount, _id };
   }
 
   async removeBranch(_id: ObjectId, branchId: ObjectId) {
     const conditions = {
-      _id,
-      //   branches: { $elemMatch: { _id: branchId } },
+      userId: _id,
+      branches: { $elemMatch: { _id: new ObjectId(branchId) } },
     };
     console.log(_id);
     console.log(conditions);
@@ -142,8 +163,8 @@ export class PartnerService {
     console.log('first');
     const partner = await this.commonQueryService.findOneByQuery(
       DocName.Partner,
-      { _id: _id },
-      //   options,
+      conditions,
+      options,
     );
 
     console.log(partner);

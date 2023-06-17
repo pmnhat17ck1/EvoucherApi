@@ -71,8 +71,9 @@ export class CampaignController {
       throw new BadRequestException('File is not an image');
     }
     const userId = getUserId(req);
-    console.log({ userId });
-    body.campaignImage = campaignImage.filename;
+    body.campaignImage = `${campaignImage.destination.replace(/\./g, '')}/${
+      campaignImage.filename
+    }`;
 
     const campaign = await this.campaignService.createCampaign(userId, body);
     return { data: { _id: campaign.insertedId } };
@@ -115,7 +116,9 @@ export class CampaignController {
     const { matchedCount } = await this.campaignService.updateCampaignImage(
       userId,
       id,
-      campaignImage.filename,
+      `${campaignImage.destination.replace(/\./g, '')}/${
+        campaignImage.filename
+      }`,
     );
     return { matchedCount };
   }

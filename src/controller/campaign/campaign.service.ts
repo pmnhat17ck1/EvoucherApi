@@ -47,7 +47,7 @@ export class CampaignService {
 
     const partner: Partner = await this.commonQueryService.findOneByQuery(
       DocName.Partner,
-      { userId: new ObjectId('648c2121937c1c17e8bbdf02') },
+      { userId: new ObjectId(userId) },
     );
 
     const newCampaign: Campaign = {

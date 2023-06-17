@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from 'src/helpers/util.helper';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -39,7 +40,7 @@ export class AdminAccessStrategy extends PassportStrategy(
 
     const user: User = await this.usersService.getUserById(payload._id);
 
-    if (user.role !== Role.Admin) {
+    if (isNullOrUndefined(user) || user.role !== Role.Admin) {
       throw new UnauthorizedException();
     }
     const isValid = await this.usersService.getUserIfRefreshTokenMatches(

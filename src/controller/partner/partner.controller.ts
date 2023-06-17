@@ -45,7 +45,7 @@ export class PartnerController {
     }
     const userId: ObjectId = getUserId(req);
 
-    body.logo = logo.filename;
+    body.logo = `${logo.destination.replace(/\./g, '')}/${logo.filename}`;
     const partner = await this.partnerService.createPartner(userId, body);
     return { data: { _id: partner.insertedId } };
   }
