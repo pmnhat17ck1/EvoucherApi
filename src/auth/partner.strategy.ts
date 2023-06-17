@@ -38,13 +38,14 @@ export class PartnerAccessStrategy extends PassportStrategy(
     }
 
     const user: User = await this.usersService.getUserById(payload._id);
-    if (user.role !== Role.Partner) {
+    if (user.role == Role.Client) {
       throw new UnauthorizedException();
     }
     const isValid = await this.usersService.getUserIfRefreshTokenMatches(
       refreshToken,
       new ObjectId(payload._id),
     );
+
     if (!isValid) {
       throw new UnauthorizedException();
     }

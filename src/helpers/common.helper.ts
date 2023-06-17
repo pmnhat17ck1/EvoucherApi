@@ -23,7 +23,26 @@ export function getUserIdFromHeader(req: Request) {
   const payload = jwtDecode<{ _id: string }>(token);
   return new ObjectId(payload._id);
 }
-
+export function setNameImage(req, file, cb) {
+  const name = req.body.username;
+  const fileExtension =
+    file.originalname.split('.')[file.originalname.split('.').length - 1];
+  const newFileName = name + '_' + Date.now() + '.' + fileExtension;
+  cb(null, newFileName);
+}
+export function setNameImageCampaign(req, file, cb) {
+  const name = req.body.name.replace(/\s/g, '');
+  const fileExtension =
+    file.originalname.split('.')[file.originalname.split('.').length - 1];
+  const newFileName = name + '_' + Date.now() + '.' + fileExtension;
+  cb(null, newFileName);
+}
+export function fileFilter(req, file, cb) {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    return cb(null, false);
+  }
+  cb(null, true);
+}
 export function getUserId(req: any) {
   if (isNullOrUndefined(req.user)) {
     return null;

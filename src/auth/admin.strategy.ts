@@ -31,12 +31,14 @@ export class AdminAccessStrategy extends PassportStrategy(
     const refreshCookieName = this.configService.get<string>(
       'REFRESH_COOKIE_NAME',
     );
+
     const refreshToken = getRefreshToken(req, refreshCookieName);
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
 
     const user: User = await this.usersService.getUserById(payload._id);
+
     if (user.role !== Role.Admin) {
       throw new UnauthorizedException();
     }

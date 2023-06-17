@@ -4,14 +4,16 @@ import { User } from './user';
 
 export class Partner extends BaseEntity {
   userId: ObjectId;
-  logoBrand?: string;
-  branch?: Branch[];
+  name!: string;
+  logo?: string;
+  branches?: Branch[];
   type: TypeIndustry;
 }
 
-class Branch extends BaseEntity {
+export class Branch extends BaseEntity {
   nameBranch!: string;
   direction?: string;
+  description?: string;
   longtitude?: string;
   latitude?: string;
 }

@@ -3,7 +3,7 @@ import ms = require('ms');
 import { ClientAccessAuthGuard } from '../../auth/client.strategy';
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LoginRequest, RegisterRequest } from 'src/models/requests/user.req';
+import { RegisterRequest } from 'src/models/requests/user.req';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -25,7 +25,7 @@ export class UserController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() req: any, @Body() body: LoginRequest) {
+  async login(@Req() req: any) {
     const data = await this.userService.login(req.user);
     const refreshCookieName = this.configService.get('REFRESH_COOKIE_NAME');
     req.res.cookie(refreshCookieName, data.token.refreshToken, {
