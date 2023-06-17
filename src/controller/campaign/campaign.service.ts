@@ -52,6 +52,7 @@ export class CampaignService {
 
     const newCampaign: Campaign = {
       ...request,
+      idBranch: new ObjectId(request.idBranch),
       status: CampaignState.Pending,
       type: partner.type,
       discountDefined: [],

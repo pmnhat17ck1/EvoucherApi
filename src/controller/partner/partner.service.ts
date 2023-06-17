@@ -66,12 +66,16 @@ export class PartnerService {
     return { insertedId };
   }
 
-  async createBranch(userId: ObjectId, request, _id: ObjectId) {
+  async createBranch(userId: ObjectId, request) {
     const now = this.commonService.getDate();
 
     const geoCode = await this.httpService.axiosRef.get(
       `https://geocode.maps.co/search?q=${request.direction}`,
     );
+
+    if (isNullOrUndefined(geoCode.data[0])) {
+      throw new ForbiddenException('Direction not found');
+    }
 
     const newBranch: Branch = {
       _id: new ObjectId(),
@@ -81,7 +85,8 @@ export class PartnerService {
       createdAt: now,
       createdByUserId: <ObjectId>userId,
     };
-    const conditions = { userId: new ObjectId(_id) };
+
+    const conditions = { userId: new ObjectId(userId) };
 
     const update: any = {
       $push: { branches: newBranch },
@@ -94,7 +99,7 @@ export class PartnerService {
       update,
     );
 
-    return { matchedCount, _id };
+    return { matchedCount, _id: newBranch._id };
   }
 
   async modifyBranch(

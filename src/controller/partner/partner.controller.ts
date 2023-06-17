@@ -1,3 +1,4 @@
+import { PartnerAccessAuthGuard } from './../../auth/partner.strategy';
 import { AdminAccessAuthGuard } from './../../auth/admin.strategy';
 import {
   Body,
@@ -19,7 +20,7 @@ import { PartnerService } from './partner.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
-@UseGuards(AdminAccessAuthGuard)
+@UseGuards(PartnerAccessAuthGuard)
 @Controller('partner')
 export class PartnerController {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -50,17 +51,12 @@ export class PartnerController {
     return { data: { _id: partner.insertedId } };
   }
 
-  @Put('/:id')
-  async addBranch(
-    @Param('id') id: ObjectId,
-    @Body() body,
-    @Req() req: Request,
-  ) {
+  @Put('/addBranch')
+  async addBranch(@Body() body, @Req() req: Request) {
     const userId = getUserId(req);
     const { matchedCount, _id } = await this.partnerService.createBranch(
       userId,
       body,
-      id,
     );
 
     if (matchedCount !== 1) {
